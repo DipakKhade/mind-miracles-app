@@ -6,16 +6,23 @@
 import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 
+type ColorName = 'background' | 'text' | 'textSecondary' | 'textMuted' | 'primary' | 'secondary' | 
+                 'border' | 'icon' | 'card' | 'surface' | 'success' | 'warning' | 'error' | 'info' |
+                 'primaryLight' | 'primaryDark' | 'secondaryLight' | 'accent' | 'accentLight' |
+                 'tabIconDefault' | 'tabIconSelected' | 'tint' | 'overlay' | 'destructive' |
+                 'destructiveForeground' | 'popover' | 'popoverForeground' | 'input' | 'ring';
+
 export function useThemeColor(
   props: { light?: string; dark?: string },
-  colorName: keyof typeof Colors.light & keyof typeof Colors.dark
-) {
+  colorName: ColorName
+): string {
   const theme = useColorScheme() ?? 'light';
   const colorFromProps = props[theme];
 
   if (colorFromProps) {
     return colorFromProps;
   } else {
-    return Colors[theme][colorName];
+    const color = Colors[theme][colorName];
+    return typeof color === 'string' ? color : color[0];
   }
 }
