@@ -122,7 +122,7 @@ export default function ProfileScreen() {
           </TouchableOpacity>
           <View style={styles.userInfo}>
             <Image
-              source={{ uri: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=200' }}
+              source={require('../../assets/mm_images/sonali_image.png')}
               style={styles.userAvatar}
             />
             <View style={styles.userDetails}>
