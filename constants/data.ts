@@ -173,7 +173,7 @@ export const EXPERTS = [
     specialization: ['Anxiety', 'Depression', 'Hypnotherapy', 'Youth Counseling'],
     experience: '5+ years',
     education: 'Masters in Psychology',
-    image: 'https://images.unsplash.com/photo-1594824476967-48c8b964273f?w=800',
+    image: require('../assets/mm_images/sonali_image.png'),
     rating: 4.9,
     reviews: 150,
     available: true,
