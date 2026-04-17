@@ -22,14 +22,14 @@ export const COURSE_CATEGORIES = [
     title: 'Hypnotherapy',
     description: 'Deep healing through guided hypnosis',
     icon: 'brain',
-    color: '#1e3a5f',
+    color: '#166534',
   },
   {
     id: 'counseling',
     title: 'Psychological Counseling',
     description: 'Professional mental health support',
     icon: 'heart',
-    color: '#3b82f6',
+    color: '#22c55e',
   },
   {
     id: 'workshops',
@@ -207,7 +207,7 @@ export const MENTAL_HEALTH_TESTS = [
     questions: 9,
     duration: '7 min',
     icon: 'cloud-rain',
-    color: '#6366F1',
+    color: '#22c55e',
     testQuestions: [
       { id: 1, question: 'Little interest or pleasure in doing things?', options: ['Not at all', 'Several days', 'More than half the days', 'Nearly every day'] },
       { id: 2, question: 'Feeling down, depressed, or hopeless?', options: ['Not at all', 'Several days', 'More than half the days', 'Nearly every day'] },
