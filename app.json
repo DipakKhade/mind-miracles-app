@@ -14,7 +14,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "backgroundColor": "#1e3a5f",
+        "backgroundColor": "#166534",
         "foregroundImage": "./assets/mm_images/app_icon.png"
       },
       "edgeToEdgeEnabled": true,
@@ -33,12 +33,13 @@
           "image": "./assets/mm_images/mind_miracles_logo.png",
           "imageWidth": 200,
           "resizeMode": "contain",
-          "backgroundColor": "#1e3a5f",
+          "backgroundColor": "#166534",
           "dark": {
             "backgroundColor": "#020617"
           }
         }
-      ]
+      ],
+      "expo-localization"
     ],
     "experiments": {
       "typedRoutes": true,
