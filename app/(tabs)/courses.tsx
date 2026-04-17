@@ -13,12 +13,14 @@ import { Ionicons } from '@expo/vector-icons';
 import Animated, { FadeInDown, Layout } from 'react-native-reanimated';
 import { Colors, Shadows, BorderRadius } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import { useLanguage } from '@/context/LanguageContext';
 import { COURSES, COURSE_CATEGORIES } from '@/constants/data';
 
 export default function CoursesScreen() {
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
   const colors = isDark ? Colors.dark : Colors.light;
+  const { t } = useLanguage();
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -39,7 +41,7 @@ export default function CoursesScreen() {
           <Ionicons name="search" size={20} color={colors.textMuted} />
           <TextInput
             style={[styles.searchInput, { color: colors.text }]}
-            placeholder="Search programs..."
+            placeholder={t('courses.title')}
             placeholderTextColor={colors.textMuted}
             value={searchQuery}
             onChangeText={setSearchQuery}
@@ -70,7 +72,7 @@ export default function CoursesScreen() {
             styles.categoryChipText,
             !selectedCategory && styles.categoryChipTextActive
           ]}>
-            All
+            {t('courses.allCourses')}
           </Text>
         </TouchableOpacity>
         {COURSE_CATEGORIES.map((category) => (

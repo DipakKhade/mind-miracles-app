@@ -15,6 +15,7 @@ import { Ionicons } from '@expo/vector-icons';
 import Animated, { FadeInDown, FadeInUp } from 'react-native-reanimated';
 import { Colors, Shadows, BorderRadius } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import { useLanguage } from '@/context/LanguageContext';
 import { COURSES, EXPERTS, MENTAL_HEALTH_TESTS } from '@/constants/data';
 
 const { width } = Dimensions.get('window');
@@ -23,6 +24,7 @@ export default function HomeScreen() {
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
   const colors = isDark ? Colors.dark : Colors.light;
+  const { t } = useLanguage();
   const [refreshing, setRefreshing] = useState(false);
 
   const onRefresh = () => {
@@ -30,7 +32,7 @@ export default function HomeScreen() {
     setTimeout(() => setRefreshing(false), 1500);
   };
 
-  const featuredCourses = COURSES.slice(0, 3);
+  const featuredCourses = COURSES.slice(0, 1);
 
   return (
     <ScrollView
@@ -48,10 +50,10 @@ export default function HomeScreen() {
       >
         <View style={styles.heroContent}>
           <Animated.View entering={FadeInDown.delay(100)}>
-            <Text style={styles.heroGreeting}>Welcome to</Text>
+            <Text style={styles.heroGreeting}>{t('home.welcome')}</Text>
             <Text style={styles.heroTitle}>Mind Miracles</Text>
             <Text style={styles.heroSubtitle}>
-              Expert psychological healing and hypnotherapy services to help you achieve mental wellness and personal growth.
+              {t('home.subtitle')}
             </Text>
           </Animated.View>
           
@@ -61,14 +63,14 @@ export default function HomeScreen() {
               onPress={() => router.push('/(tabs)/test')}
             >
               <Ionicons name="heart" size={20} color="#fff" />
-              <Text style={styles.primaryButtonText}>Take Test</Text>
+              <Text style={styles.primaryButtonText}>{t('test.title')}</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.secondaryButton}
               onPress={() => router.push('/(tabs)/consult')}
             >
               <Ionicons name="calendar" size={20} color="#fff" />
-              <Text style={styles.secondaryButtonText}>Book Session</Text>
+              <Text style={styles.secondaryButtonText}>{t('consult.bookSession')}</Text>
             </TouchableOpacity>
           </Animated.View>
         </View>
@@ -92,10 +94,10 @@ export default function HomeScreen() {
       </LinearGradient>
 
       <View style={styles.content}>
-        <Animated.View entering={FadeInDown.delay(200)}>
+          <Animated.View entering={FadeInDown.delay(200)}>
           <View style={styles.sectionHeader}>
             <Text style={[styles.sectionTitle, { color: colors.text }]}>
-              Quick Actions
+              {t('home.quickActions')}
             </Text>
           </View>
           <View style={styles.quickActions}>
@@ -119,7 +121,7 @@ export default function HomeScreen() {
         <Animated.View entering={FadeInDown.delay(400)}>
           <View style={styles.sectionHeader}>
             <Text style={[styles.sectionTitle, { color: colors.text }]}>
-              Featured Programs
+              {t('home.featuredProgram')}
             </Text>
             <TouchableOpacity onPress={() => router.push('/(tabs)/courses')}>
               <Text style={styles.seeAll}>See All</Text>
@@ -168,7 +170,7 @@ export default function HomeScreen() {
         <Animated.View entering={FadeInDown.delay(500)}>
           <View style={styles.sectionHeader}>
             <Text style={[styles.sectionTitle, { color: colors.text }]}>
-              Our Expert
+              {t('home.ourExperts')}
             </Text>
           </View>
           <View style={[styles.expertCard, { backgroundColor: colors.card }]}>

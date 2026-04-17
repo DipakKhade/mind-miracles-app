@@ -3,12 +3,14 @@ import { Platform } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import { useLanguage } from '@/context/LanguageContext';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
   const colors = isDark ? Colors.dark : Colors.light;
+  const { t } = useLanguage();
   const insets = useSafeAreaInsets();
 
   return (
@@ -42,7 +44,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Home',
+          title: t('common.home'),
           headerTitle: 'Mind Miracles',
           tabBarIcon: ({ color, size }) => <IconSymbol name="house.fill" size={size} color={color} />,
         }}
@@ -50,32 +52,32 @@ export default function TabLayout() {
       <Tabs.Screen
         name="courses"
         options={{
-          title: 'Courses',
-          headerTitle: 'Programs',
+          title: t('common.courses'),
+          headerTitle: t('courses.title'),
           tabBarIcon: ({ color, size }) => <IconSymbol name="book" size={size} color={color} />,
         }}
       />
       <Tabs.Screen
         name="test"
         options={{
-          title: 'Test',
-          headerTitle: 'Mental Health Test',
-          tabBarIcon: ({ color, size }) => <IconSymbol name="brain" size={size} color={color} />,
+          title: t('common.test'),
+          headerTitle: t('test.title'),
+          tabBarIcon: ({ color, size }) => <IconSymbol name="meditation" size={size} color={color} />,
         }}
       />
       <Tabs.Screen
         name="consult"
         options={{
-          title: 'Consult',
-          headerTitle: 'Consultation',
+          title: t('common.consult'),
+          headerTitle: t('consult.title'),
           tabBarIcon: ({ color, size }) => <IconSymbol name="chat" size={size} color={color} />,
         }}
       />
       <Tabs.Screen
         name="profile"
         options={{
-          title: 'Profile',
-          headerTitle: 'My Profile',
+          title: t('common.profile'),
+          headerTitle: t('profile.title'),
           tabBarIcon: ({ color, size }) => <IconSymbol name="user" size={size} color={color} />,
         }}
       />

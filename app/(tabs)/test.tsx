@@ -11,12 +11,14 @@ import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import Animated, { FadeInDown, FadeInUp } from 'react-native-reanimated';
 import { Colors, Shadows, BorderRadius } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import { useLanguage } from '@/context/LanguageContext';
 import { MENTAL_HEALTH_TESTS } from '@/constants/data';
 
 export default function TestScreen() {
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
   const colors = isDark ? Colors.dark : Colors.light;
+  const { t } = useLanguage();
   const params = useLocalSearchParams();
   const testId = params.testId as string;
   
@@ -65,16 +67,16 @@ export default function TestScreen() {
   const getResultMessage = () => {
     const score = calculateScore();
     if (activeTest?.id === 'anxiety') {
-      if (score < 5) return { level: 'Minimal', color: Colors.success, message: 'Your anxiety levels appear to be minimal. Keep maintaining your mental wellness!' };
-      if (score < 10) return { level: 'Mild', color: Colors.warning, message: 'You may be experiencing mild anxiety. Consider incorporating relaxation techniques into your routine.' };
-      if (score < 15) return { level: 'Moderate', color: '#F97316', message: 'Your anxiety levels are moderate. We recommend speaking with a professional for guidance.' };
-      return { level: 'Severe', color: Colors.error, message: 'Your anxiety levels are significant. Please consider booking a consultation with our experts.' };
+      if (score < 5) return { level: t('test.minimal'), color: Colors.success, message: 'Your anxiety levels appear to be minimal. Keep maintaining your mental wellness!' };
+      if (score < 10) return { level: t('test.mild'), color: Colors.warning, message: 'You may be experiencing mild anxiety. Consider incorporating relaxation techniques into your routine.' };
+      if (score < 15) return { level: t('test.moderate'), color: '#F97316', message: 'Your anxiety levels are moderate. We recommend speaking with a professional for guidance.' };
+      return { level: t('test.severe'), color: Colors.error, message: 'Your anxiety levels are significant. Please consider booking a consultation with our experts.' };
     }
     if (activeTest?.id === 'depression') {
-      if (score < 5) return { level: 'Minimal', color: Colors.success, message: 'Your mood appears stable with minimal depressive symptoms.' };
-      if (score < 10) return { level: 'Mild', color: Colors.warning, message: 'You may be experiencing some low mood. Self-care activities could help.' };
-      if (score < 15) return { level: 'Moderate', color: '#F97316', message: 'Your symptoms suggest moderate depression. Professional support is recommended.' };
-      return { level: 'Severe', color: Colors.error, message: 'Your symptoms indicate significant depression. Please seek professional help immediately.' };
+      if (score < 5) return { level: t('test.minimal'), color: Colors.success, message: 'Your mood appears stable with minimal depressive symptoms.' };
+      if (score < 10) return { level: t('test.mild'), color: Colors.warning, message: 'You may be experiencing some low mood. Self-care activities could help.' };
+      if (score < 15) return { level: t('test.moderate'), color: '#F97316', message: 'Your symptoms suggest moderate depression. Professional support is recommended.' };
+      return { level: t('test.severe'), color: Colors.error, message: 'Your symptoms indicate significant depression. Please seek professional help immediately.' };
     }
     return { level: 'In Progress', color: Colors.primary, message: 'Complete the test to see your results.' };
   };
@@ -95,10 +97,10 @@ export default function TestScreen() {
       >
         <View style={styles.header}>
           <Text style={[styles.headerTitle, { color: colors.text }]}>
-            Mental Health Assessments
+            {t('test.title')}
           </Text>
           <Text style={[styles.headerSubtitle, { color: colors.textSecondary }]}>
-            Take our scientifically validated assessments to understand your mental wellness better
+            {t('test.subtitle')}
           </Text>
         </View>
 
@@ -122,16 +124,16 @@ export default function TestScreen() {
                   <Text style={[styles.testDescription, { color: colors.textSecondary }]} numberOfLines={2}>
                     {test.description}
                   </Text>
-                  <View style={styles.testMeta}>
-                    <View style={styles.testMetaItem}>
-                      <Ionicons name="help-circle-outline" size={14} color={colors.textSecondary} />
-                      <Text style={[styles.testMetaText, { color: colors.textSecondary }]}>{test.questions} questions</Text>
+                    <View style={styles.testMeta}>
+                      <View style={styles.testMetaItem}>
+                        <Ionicons name="help-circle-outline" size={14} color={colors.textSecondary} />
+                        <Text style={[styles.testMetaText, { color: colors.textSecondary }]}>{test.questions} {t('test.questions')}</Text>
+                      </View>
+                      <View style={styles.testMetaItem}>
+                        <Ionicons name="time-outline" size={14} color={colors.textSecondary} />
+                        <Text style={[styles.testMetaText, { color: colors.textSecondary }]}>{test.duration} {t('test.duration')}</Text>
+                      </View>
                     </View>
-                    <View style={styles.testMetaItem}>
-                      <Ionicons name="time-outline" size={14} color={colors.textSecondary} />
-                      <Text style={[styles.testMetaText, { color: colors.textSecondary }]}>{test.duration}</Text>
-                    </View>
-                  </View>
                 </View>
                 <Ionicons name="chevron-forward" size={24} color={colors.textMuted} />
               </TouchableOpacity>
@@ -142,7 +144,7 @@ export default function TestScreen() {
         <View style={[styles.disclaimer, { backgroundColor: Colors.warning + '15' }]}>
           <Ionicons name="information-circle-outline" size={20} color={colors.textSecondary} />
           <Text style={[styles.disclaimerText, { color: colors.textSecondary }]}>
-            These assessments are for informational purposes only and do not constitute a medical diagnosis. Please consult a qualified professional for clinical evaluation.
+            {t('test.disclaimer')}
           </Text>
         </View>
       </ScrollView>
@@ -163,13 +165,13 @@ export default function TestScreen() {
           <View style={[styles.resultIconContainer, { backgroundColor: result.color + '20' }]}>
             <Ionicons name="checkmark-circle" size={64} color={result.color} />
           </View>
-          <Text style={[styles.resultTitle, { color: colors.text }]}>Assessment Complete!</Text>
+          <Text style={[styles.resultTitle, { color: colors.text }]}>{t('test.assessmentComplete')}</Text>
           <Text style={[styles.resultSubtitle, { color: colors.textSecondary }]}>{activeTest.title}</Text>
           
           <View style={styles.scoreContainer}>
             <View style={[styles.scoreCircle, { borderColor: colors.border }]}>
               <Text style={[styles.scoreValue, { color: result.color }]}>{score}%</Text>
-              <Text style={[styles.scoreLabel, { color: colors.textSecondary }]}>Score</Text>
+              <Text style={[styles.scoreLabel, { color: colors.textSecondary }]}>{t('test.score')}</Text>
             </View>
           </View>
 
@@ -185,13 +187,13 @@ export default function TestScreen() {
               onPress={resetTest}
             >
               <Ionicons name="refresh" size={20} color={Colors.primary} />
-              <Text style={[styles.retryButtonText, { color: Colors.primary }]}>Take Another Test</Text>
+              <Text style={[styles.retryButtonText, { color: Colors.primary }]}>{t('test.takeAnotherTest')}</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={[styles.consultButton, { backgroundColor: Colors.primary }]}
               onPress={() => router.push('/(tabs)/consult')}
             >
-              <Text style={styles.consultButtonText}>Book Consultation</Text>
+              <Text style={styles.consultButtonText}>{t('test.bookConsultation')}</Text>
             </TouchableOpacity>
           </View>
         </Animated.View>
@@ -268,7 +270,7 @@ export default function TestScreen() {
           >
             <Ionicons name="arrow-back" size={20} color={currentQuestion === 0 ? colors.textMuted : Colors.primary} />
             <Text style={[styles.navButtonText, { color: currentQuestion === 0 ? colors.textMuted : Colors.primary }]}>
-              Previous
+              {t('common.previous')}
             </Text>
           </TouchableOpacity>
           <TouchableOpacity
@@ -281,7 +283,7 @@ export default function TestScreen() {
             disabled={selectedAnswer === undefined}
           >
             <Text style={styles.navButtonTextPrimary}>
-              {currentQuestion === activeTest.testQuestions.length - 1 ? 'Finish' : 'Next'}
+              {currentQuestion === activeTest.testQuestions.length - 1 ? t('common.finish') : t('common.next')}
             </Text>
             <Ionicons name="arrow-forward" size={20} color="#fff" />
           </TouchableOpacity>

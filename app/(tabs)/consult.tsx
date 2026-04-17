@@ -13,6 +13,7 @@ import { Ionicons } from '@expo/vector-icons';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import { Colors, Shadows, BorderRadius } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import { useLanguage } from '@/context/LanguageContext';
 import { EXPERTS, TIME_SLOTS } from '@/constants/data';
 
 const { width } = Dimensions.get('window');
@@ -21,6 +22,7 @@ export default function ConsultScreen() {
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
   const colors = isDark ? Colors.dark : Colors.light;
+  const { t } = useLanguage();
   const params = useLocalSearchParams();
   const expertId = params.expertId as string;
   
@@ -52,18 +54,18 @@ export default function ConsultScreen() {
     >
       <View style={styles.header}>
         <Text style={[styles.headerTitle, { color: colors.text }]}>
-          Book a Consultation
+          {t('consult.title')}
         </Text>
         <Text style={[styles.headerSubtitle, { color: colors.textSecondary }]}>
-          Connect with our experienced psychologists for personalized guidance
+          {t('consult.subtitle')}
         </Text>
       </View>
 
       <View style={styles.consultationTypes}>
         {[
-          { id: 'video', icon: 'videocam', label: 'Video Call', price: '₹500' },
-          { id: 'voice', icon: 'call', label: 'Voice Call', price: '₹300' },
-          { id: 'chat', icon: 'chatbubbles', label: 'Chat', price: '₹200' },
+          { id: 'video', icon: 'videocam', label: t('consult.videoCall'), price: '₹500' },
+          { id: 'voice', icon: 'call', label: t('consult.phoneCall'), price: '₹300' },
+          { id: 'chat', icon: 'chatbubbles', label: t('consult.chat'), price: '₹200' },
           { id: 'inperson', icon: 'person', label: 'In-Person', price: '₹800' },
         ].map((type) => (
           <TouchableOpacity
