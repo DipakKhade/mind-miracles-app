@@ -19,7 +19,7 @@ export const en = {
   },
   home: {
     welcome: 'Welcome to Mind Miracles',
-    subtitle: 'Your journey to mental wellness starts here',
+    subtitle: 'We Are Helping Hands You Have Been Searching For',
     featuredProgram: 'Featured Program',
     quickActions: 'Quick Actions',
     ourExperts: 'Our Expert',
