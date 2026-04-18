@@ -231,35 +231,21 @@ export default function ProfileScreen() {
           style={styles.headerGradient}
         >
           <View style={styles.header}>
-            <TouchableOpacity style={styles.notificationButton}>
-              <Ionicons name="notifications-outline" size={24} color="#fff" />
-            </TouchableOpacity>
-            <View style={styles.userInfo}>
-              {userInfo?.photo ? (
-                <Image source={{ uri: userInfo.photo }} style={styles.userAvatar} />
-              ) : (
-                <View style={[styles.userAvatar, styles.userAvatarPlaceholder]}>
-                  <Ionicons name="person" size={30} color="#fff" />
-                </View>
-              )}
-              <View style={styles.userDetails}>
-                <Text style={styles.userName}>{userInfo?.name || 'Welcome!'}</Text>
-                <Text style={styles.userSubtitle}>{t('profile.yourWellnessJourney')}</Text>
-              </View>
-            </View>
+            <Text style={styles.headerGreeting}>{t('home.welcome')}</Text>
           </View>
 
-          <View style={styles.streakCard}>
-            <View style={styles.streakContent}>
-              <Ionicons name="flame" size={28} color="#F59E0B" />
-              <View>
-                <Text style={styles.streakNumber}>{userStats.streakDays} {t('profile.dayStreak')}!</Text>
-                <Text style={styles.streakText}>{t('profile.keepUpWork')}</Text>
+          <View style={styles.userProfileCard}>
+            {userInfo?.photo ? (
+              <Image source={{ uri: userInfo.photo }} style={styles.profileAvatar} />
+            ) : (
+              <View style={[styles.profileAvatar, styles.profileAvatarPlaceholder]}>
+                <Ionicons name="person" size={40} color="#fff" />
               </View>
-            </View>
-            <TouchableOpacity style={styles.streakButton}>
-              <Ionicons name="chevron-forward" size={20} color="#fff" />
-            </TouchableOpacity>
+            )}
+            <Text style={styles.profileName}>{userInfo?.name || 'Welcome!'}</Text>
+            {userInfo?.email && (
+              <Text style={styles.profileEmail}>{userInfo.email}</Text>
+            )}
           </View>
         </LinearGradient>
 
@@ -530,6 +516,41 @@ const styles = StyleSheet.create({
   },
   userSubtitle: {
     fontSize: 12,
+    color: 'rgba(255,255,255,0.8)',
+  },
+  headerGreeting: {
+    fontSize: 16,
+    color: 'rgba(255,255,255,0.8)',
+    fontWeight: '500',
+    paddingHorizontal: 20,
+    paddingTop: 10,
+  },
+  userProfileCard: {
+    alignItems: 'center',
+    paddingVertical: 30,
+  },
+  profileAvatar: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    borderWidth: 3,
+    borderColor: '#fff',
+    marginBottom: 16,
+  },
+  profileAvatarPlaceholder: {
+    backgroundColor: 'rgba(255,255,255,0.3)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  profileName: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#fff',
+    marginBottom: 4,
+  },
+  profileEmail: {
+    fontSize: 14,
     color: 'rgba(255,255,255,0.8)',
   },
   streakCard: {
