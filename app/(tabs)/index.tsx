@@ -167,39 +167,7 @@ export default function HomeScreen() {
           </ScrollView>
         </Animated.View>
 
-        <Animated.View entering={FadeInDown.delay(500)}>
-          <View style={styles.sectionHeader}>
-            <Text style={[styles.sectionTitle, { color: colors.text }]}>
-              {t('home.ourExperts')}
-            </Text>
-          </View>
-          <View style={[styles.expertCard, { backgroundColor: colors.card }]}>
-            <Image source={{ uri: EXPERTS[0].image }} style={styles.expertImage} />
-            <View style={styles.expertContent}>
-              <View style={styles.expertInfo}>
-                <Text style={[styles.expertName, { color: colors.text }]}>
-                  {EXPERTS[0].name}
-                </Text>
-                <Text style={styles.expertTitle}>{EXPERTS[0].title}</Text>
-                <View style={styles.expertMeta}>
-                  <View style={styles.expertRating}>
-                    <Ionicons name="star" size={14} color="#F59E0B" />
-                    <Text style={[styles.expertRatingText, { color: colors.text }]}>{EXPERTS[0].rating}</Text>
-                  </View>
-                  <Text style={[styles.expertReviews, { color: colors.textSecondary }]}>{EXPERTS[0].reviews} reviews</Text>
-                </View>
-              </View>
-              <TouchableOpacity
-                style={[styles.bookExpertButton, { backgroundColor: colors.primary }]}
-                onPress={() => router.push({ pathname: '/(tabs)/consult', params: { expertId: EXPERTS[0].id } })}
-              >
-                <Text style={styles.bookExpertButtonText}>Book Now</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </Animated.View>
-
-        <Animated.View entering={FadeInDown.delay(600)} style={styles.emergencySection}>
+        <Animated.View entering={FadeInDown.delay(500)} style={styles.emergencySection}>
           <View style={[styles.emergencyCard, { backgroundColor: colors.card }]}>
             <View style={styles.emergencyHeader}>
               <View style={[styles.emergencyIcon, { backgroundColor: Colors.error + '20' }]}>
@@ -258,6 +226,7 @@ const styles = StyleSheet.create({
   heroButtons: {
     flexDirection: 'row',
     gap: 12,
+    flexWrap: 'wrap',
   },
   primaryButton: {
     flexDirection: 'row',
