@@ -25,6 +25,9 @@
       "output": "static",
       "favicon": "./assets/mm_images/app_icon.png"
     },
+    "extra": {
+      "googleWebClientId": "204929844187-h4dm7ld6esk5ugjtaa6r54455mo6f1jr.apps.googleusercontent.com"
+    },
     "plugins": [
       "expo-router",
       [
