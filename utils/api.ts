@@ -23,6 +23,9 @@ function transformMongoDB(doc: any): any {
   }
   
   if (doc.$date) {
+    if (typeof doc.$date === 'object' && doc.$date.$numberLong) {
+      return new Date(parseInt(doc.$date.$numberLong)).toISOString();
+    }
     if (Array.isArray(doc.$date)) {
       return new Date(doc.$date[0], doc.$date[1] - 1, doc.$date[2], doc.$date[3] || 0, doc.$date[4] || 0).toISOString();
     }
@@ -41,7 +44,7 @@ async function fetchApi<T>(endpoint: string, options?: RequestInit): Promise<T> 
   console.log('[API] Fetching:', url);
   
   try {
-    const response = await fetch(url, {
+const response = await fetch(url, {
       ...options,
       headers: {
         'Content-Type': 'application/json',
@@ -49,12 +52,32 @@ async function fetchApi<T>(endpoint: string, options?: RequestInit): Promise<T> 
       },
     });
     
-    const rawJson = await response.json();
+    const text = await response.text();
+    console.log('[API] Response status:', response.status);
+    console.log('[API] Raw response:', text);
+    
+    // Check if we got HTML error page instead of JSON
+    if (response.status >= 400 || (!text.startsWith('{') && !text.startsWith('['))) {
+      console.log('[API] Error response:', text.substring(0, 200));
+      throw new Error('Server error: ' + text.substring(0, 100));
+    }
+    
+    if (!text.startsWith('{') && !text.startsWith('[')) {
+      console.log('[API] Non-JSON response received');
+      throw new Error('Server returned: ' + text.substring(0, 100));
+    }
+    
+    const rawJson = JSON.parse(text);
     
     const json = transformMongoDB(rawJson) as ApiResponse<T>;
     
     if (!json.success) {
-      throw new Error(json.error || 'API request failed');
+      // Check if data is present - for enrollment check, might return success: false with null data
+      if (json.data !== undefined && json.data !== null) {
+        // Has data, treat as success
+      } else {
+        throw new Error(json.error || 'API request failed');
+      }
     }
     
     return json.data as T;
@@ -199,10 +222,10 @@ export interface Payment {
 }
 
 export interface RazorpayOrder {
-  orderId: string;
+  order_id: string;
   amount: number;
   currency: string;
-  keyId: string;
+  key_id: string;
 }
 
 export const api = {
@@ -251,12 +274,21 @@ export const api = {
     create: (userId: string, courseId: string) =>
       fetchApi<Enrollment>('/enrollments', {
         method: 'POST',
-        body: JSON.stringify({ user_id: userId, course_id: courseId }),
+        body: JSON.stringify({ userId, courseId }),
       }),
     getUserEnrollments: (userId: string) =>
       fetchApi<Enrollment[]>(`/enrollments/user/${userId}`),
-    check: (userId: string, courseId: string) =>
-      fetchApi<Enrollment>(`/enrollments/check/${userId}/${courseId}`),
+    check: async (userId: string, courseId: string) => {
+      console.log('checking /enrollments/check', userId, courseId);
+      try {
+        const result = await fetchApi<Enrollment>(`/enrollments/check/${userId}/${courseId}`);
+        console.log('check result:', result);
+        return result;
+      } catch (err: any) {
+        console.log('check error:', err.message);
+        throw err; // Re-throw so caller knows not enrolled
+      }
+    }
   },
 };
 
