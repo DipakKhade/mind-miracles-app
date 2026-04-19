@@ -1,3 +1,4 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
   GoogleSignin,
   GoogleSigninButton,
@@ -70,7 +71,7 @@ export const signInWithGoogle = async () => {
       },
     };
     
-    return { success: true, user: "userData" };
+    return { success: true, user: userData };
   } catch (error: any) {
     console.log('[GoogleAuth] Error:', error.code, error.message || error);
     
@@ -91,7 +92,9 @@ export const signOutGoogle = async () => {
   try {
     console.log('[GoogleAuth] Signing out...');
     await GoogleSignin.signOut();
-    console.log('[GoogleAuth] Sign out successful');
+    // Clear stored user ID
+    await AsyncStorage.removeItem('server_user_id');
+    console.log('[GoogleAuth] Sign out successful, storage cleared');
     return { success: true };
   } catch (error: any) {
     console.log('[GoogleAuth] Sign out error:', error.message);
