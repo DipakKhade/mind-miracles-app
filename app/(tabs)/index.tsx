@@ -132,7 +132,7 @@ export default function HomeScreen() {
               <TouchableOpacity
                 key={course.id}
                 style={[styles.courseCard, { backgroundColor: colors.card }]}
-                onPress={() => router.push({ pathname: '/(tabs)/courses', params: { courseId: course.id } })}
+                onPress={() => router.push(`/courses/${course.id}`)}
               >
                 <Image source={{ uri: course.image }} style={styles.courseImage} />
                 <View style={styles.courseContent}>

@@ -110,7 +110,7 @@ export default function CoursesScreen() {
           >
             <TouchableOpacity 
               style={[styles.courseCard, { backgroundColor: colors.card }]}
-              onPress={() => router.push({ pathname: '/(tabs)/courses/[courseId]', params: { courseId: getCourseId(course) } })}
+              onPress={() => router.push(`/courses/${getCourseId(course)}`)}
             >
               <Image 
                 source={{ uri: course.thumbnailURL || 'https://via.placeholder.com/300x150' }} 
@@ -121,7 +121,7 @@ export default function CoursesScreen() {
                 style={styles.courseImageOverlay}
               >
                 <View style={[styles.levelBadge, { backgroundColor: colors.primary }]}>
-                  <Text style={styles.levelBadgeText}>{course.isPaid ? 'Premium' : 'Free'}</Text>
+                  <Text style={styles.levelBadgeText}>{(course.isPaid || course.price > 0) ? 'Premium' : 'Free'}</Text>
                 </View>
               </LinearGradient>
               <View style={styles.courseContent}>
@@ -159,7 +159,7 @@ const styles = StyleSheet.create({
   coursesList: { paddingHorizontal: 16 },
   resultsCount: { fontSize: 13, marginBottom: 16 },
   courseCard: { borderRadius: BorderRadius.lg, overflow: 'hidden', marginBottom: 16, ...Shadows.medium },
-  courseImage: { width: '100', height: 150 },
+  courseImage: { width: '100%', height: 180, resizeMode: 'cover' },
   courseImageOverlay: { position: 'absolute', top: 0, left: 0, right: 0, height: 60, justifyContent: 'flex-start', padding: 10 },
   levelBadge: { alignSelf: 'flex-start', paddingHorizontal: 10, paddingVertical: 4, borderRadius: BorderRadius.sm },
   levelBadgeText: { fontSize: 11, fontWeight: '600', color: '#fff' },
