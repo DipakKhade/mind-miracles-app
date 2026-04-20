@@ -4,7 +4,7 @@
     "slug": "mind-miracles-app",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/mm_images/app_icon.png",
+    "icon": "./assets/mm_images/app_icon_v0.png",
     "scheme": "mindmiraclesapp",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
@@ -15,15 +15,11 @@
     "android": {
       "adaptiveIcon": {
         "backgroundColor": "#166534",
-        "foregroundImage": "./assets/mm_images/app_icon.png"
+        "foregroundImage": "./assets/mm_images/app_icon_v0.png"
       },
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
       "package": "com.dipak8999.mindmiraclesapp"
-    },
-    "web": {
-      "output": "static",
-      "favicon": "./assets/mm_images/app_icon.png"
     },
     "extra": {
       "googleWebClientId": "204929844187-h4dm7ld6esk5ugjtaa6r54455mo6f1jr.apps.googleusercontent.com"
@@ -33,13 +29,10 @@
       [
         "expo-splash-screen",
         {
-          "image": "./assets/mm_images/mind_miracles_logo.png",
+          "image": "./assets/mm_images/flash_icon.png",
           "imageWidth": 200,
           "resizeMode": "contain",
-          "backgroundColor": "#166534",
-          "dark": {
-            "backgroundColor": "#020617"
-          }
+          "backgroundColor": "#166534"
         }
       ],
       "expo-localization"
