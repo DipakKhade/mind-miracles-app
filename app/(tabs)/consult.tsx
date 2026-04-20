@@ -1,14 +1,14 @@
-import { Link } from 'expo-router';
+import { EXPERTS } from '@/constants/data';
+import { BorderRadius, Colors, Shadows } from '@/constants/theme';
+import { useLanguage } from '@/context/LanguageContext';
+import { useColorScheme } from '@/hooks/use-color-scheme';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert } from 'react-native';
-import { Colors, Shadows, BorderRadius } from '@/constants/theme';
-import { useColorScheme } from '@/hooks/use-color-scheme';
-import { useLanguage } from '@/context/LanguageContext';
-import { EXPERTS } from '@/constants/data';
+import { Linking } from 'react-native';
+import { Alert, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 
-const PHONE_NUMBER = '+917020053425';
+const PHONE_NUMBER = '+918999105272';
 
 export default function ConsultScreen() {
   const colorScheme = useColorScheme();
@@ -19,12 +19,12 @@ export default function ConsultScreen() {
   const handleBookSession = () => {
     Alert.alert(
       t('consult.bookSession'),
-      'Call +91 70200 53425 for booking a consultation?',
+      'Call +91 89991 05272 for booking a consultation?',
       [
         { text: t('common.cancel'), style: 'cancel' },
         { 
           text: 'Call Now', 
-          onPress: () => Link.open(`tel:${PHONE_NUMBER}`)
+          onPress: () => Linking.openURL(`tel:${PHONE_NUMBER}`)
         },
       ]
     );
@@ -41,7 +41,7 @@ export default function ConsultScreen() {
         <TouchableOpacity style={[styles.bookButton, { backgroundColor: colors.primary }]} onPress={handleBookSession}>
           <Ionicons name="call" size={24} color="#fff" />
           <Text style={styles.bookButtonText}>{t('consult.bookSession')}</Text>
-          <Text style={styles.bookButtonSubtext}>+91 70200 53425</Text>
+          <Text style={styles.bookButtonSubtext}>+91 89991 05272</Text>
         </TouchableOpacity>
       </Animated.View>
 
