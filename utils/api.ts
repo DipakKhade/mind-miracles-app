@@ -117,7 +117,8 @@ export interface Video {
   id?: string;
   title: string;
   description?: string;
-  videoUrl: string;
+  videoUrl?: string;
+  vimeoId?: string;
   duration?: number;
   thumbnailUrl?: string;
 }
@@ -169,14 +170,13 @@ export interface UserTestAnswer {
 }
 
 export interface CreateTestResultRequest {
-  userId?: string;
-  testType: string;
+  user_id?: string;
+  test_type: string;
   answers: UserTestAnswer[];
-  userInfo?: {
+  user_info?: {
     name?: string;
     email?: string;
     mobile?: string;
-    age?: number;
   };
 }
 
