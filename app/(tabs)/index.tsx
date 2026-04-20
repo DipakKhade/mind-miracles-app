@@ -1,22 +1,21 @@
+import { COURSES, MENTAL_HEALTH_TESTS } from '@/constants/data';
+import { BorderRadius, Colors, Shadows } from '@/constants/theme';
+import { useLanguage } from '@/context/LanguageContext';
+import { useColorScheme } from '@/hooks/use-color-scheme';
+import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Image } from 'expo-image';
+import { router } from 'expo-router';
 import { useState } from 'react';
 import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  TouchableOpacity,
   Dimensions,
   RefreshControl,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from 'react-native';
-import { router } from 'expo-router';
-import { Ionicons } from '@expo/vector-icons';
 import Animated, { FadeInDown, FadeInUp } from 'react-native-reanimated';
-import { Colors, Shadows, BorderRadius } from '@/constants/theme';
-import { useColorScheme } from '@/hooks/use-color-scheme';
-import { useLanguage } from '@/context/LanguageContext';
-import { COURSES, EXPERTS, MENTAL_HEALTH_TESTS } from '@/constants/data';
 
 const { width } = Dimensions.get('window');
 
@@ -62,7 +61,7 @@ export default function HomeScreen() {
               style={styles.primaryButton}
               onPress={() => router.push('/(tabs)/test')}
             >
-              <Ionicons name="heart" size={20} color="#fff" />
+              <Ionicons name="heart" size={20} color="#008000" />
               <Text style={styles.primaryButtonText}>{t('test.title')}</Text>
             </TouchableOpacity>
             <TouchableOpacity
@@ -118,7 +117,7 @@ export default function HomeScreen() {
           </View>
         </Animated.View>
 
-        <Animated.View entering={FadeInDown.delay(400)}>
+        {/* <Animated.View entering={FadeInDown.delay(400)}>
           <View style={styles.sectionHeader}>
             <Text style={[styles.sectionTitle, { color: colors.text }]}>
               {t('home.featuredProgram')}
@@ -165,7 +164,7 @@ export default function HomeScreen() {
               </TouchableOpacity>
             ))}
           </ScrollView>
-        </Animated.View>
+        </Animated.View> */}
 
         <Animated.View entering={FadeInDown.delay(500)} style={styles.emergencySection}>
           <View style={[styles.emergencyCard, { backgroundColor: colors.card }]}>
