@@ -14,6 +14,7 @@ import { Colors, Shadows, BorderRadius } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useLanguage } from '@/context/LanguageContext';
 import { api, TestSummary, MentalHealthTest, UserTestAnswer } from '@/utils/api';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 function TestListScreen({ onSelectTest }: { onSelectTest: (testType: string) => void }) {
   const colorScheme = useColorScheme();
@@ -127,8 +128,10 @@ function TestQuestionsScreen({ testType, onBack, testData }: { testType: string;
 
   const questions = testData.questions || [];
   const selectedAnswer = answers[currentQuestion];
+  const hasSelected = selectedAnswer !== undefined && selectedAnswer !== null;
 
   const selectAnswer = (value: number) => {
+    console.log('[Test] Select answer:', value, 'for question:', currentQuestion);
     setAnswers(prev => ({ ...prev, [currentQuestion]: value }));
   };
 
@@ -146,19 +149,50 @@ function TestQuestionsScreen({ testType, onBack, testData }: { testType: string;
     }
   };
 
-  const submitTest = async () => {
+const submitTest = async () => {
     try {
       setSubmitting(true);
       const answerList: UserTestAnswer[] = Object.entries(answers).map(([qId, value]) => ({
         questionId: parseInt(qId),
         selectedValue: value,
       }));
+
+      const saveResult = async () => {
+        try {
+          await api.tests.submitResult({
+            testType,
+            userId: await AsyncStorage.getItem('server_user_id'),
+            answers: answerList,
+          });
+          console.log('[Test] Result saved to server');
+        } catch (err: any) {
+          console.log('[Test] Could not save to server, result shown locally only');
+        }
+      };
       
-      const data = await api.tests.submitResult({
+      const totalScore = Object.values(answers).reduce((sum: number, val: any) => sum + val, 0);
+      const maxScore = testData.maxScore;
+      const percentage = Math.round((totalScore / maxScore) * 100);
+      
+      const scoreRanges = testData.scoreRanges || [];
+      const resultData = scoreRanges.find((r: any) => 
+        percentage >= r.minScore && percentage <= r.maxScore
+      );
+      
+      const calculatedResult = {
         testType,
-        answers: answerList,
-      });
-      setResult(data);
+        score: totalScore,
+        totalScore: maxScore,
+        percentage,
+        level: resultData?.level || 'Unknown',
+        description: resultData?.description || 'Unable to determine result',
+        recommendation: resultData?.recommendation,
+};
+
+      console.log('[Test] Calculated result:', calculatedResult);
+      
+      saveResult();
+      setResult(calculatedResult);
       setTestCompleted(true);
     } catch (err: any) {
       console.log('[Test] Submit error:', err);
@@ -265,7 +299,7 @@ function TestQuestionsScreen({ testType, onBack, testData }: { testType: string;
           <Ionicons name="arrow-back" size={20} color={currentQuestion === 0 ? colors.textMuted : Colors.primary} />
           <Text style={[styles.navButtonText, { color: currentQuestion === 0 ? colors.textMuted : Colors.primary }]}>{t('common.previous')}</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={[styles.navButton, styles.navButtonPrimary, { backgroundColor: selectedAnswer ? Colors.primary : colors.textMuted }]} onPress={nextQuestion} disabled={!selectedAnswer || submitting}>
+        <TouchableOpacity style={[styles.navButton, styles.navButtonPrimary, { backgroundColor: hasSelected ? Colors.primary : colors.textMuted }]} onPress={nextQuestion} disabled={!hasSelected || submitting}>
           <Text style={styles.navButtonTextPrimary}>{submitting ? '...' : currentQuestion === questions.length - 1 ? t('common.finish') : t('common.next')}</Text>
           <Ionicons name="arrow-forward" size={20} color="#fff" />
         </TouchableOpacity>
