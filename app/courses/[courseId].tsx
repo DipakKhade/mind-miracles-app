@@ -1,7 +1,7 @@
 import { BorderRadius, Colors } from '@/constants/theme';
 import { useLanguage } from '@/context/LanguageContext';
 import { useColorScheme } from '@/hooks/use-color-scheme';
-import { api, CourseWithFeatures, RazorpayOrder } from '@/utils/api';
+import { api, CourseWithFeatures, RazorpayOrder, Video } from '@/utils/api';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -11,6 +11,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
+import VimeoPlayer from '@/components/VimeoPlayer';
 import {
   ActivityIndicator,
   Alert,
@@ -57,7 +58,7 @@ function CourseEnrollButton({
         return;
       }
 
-      const isFreeCourse = courseData.price === 0 || courseData.isPaid === false;
+      const isFreeCourse = courseData.price === 0 || courseData.isPaid === false || courseData.price <= 0;
 
       if (isFreeCourse) {
         try {
@@ -181,6 +182,9 @@ export default function CourseDetailScreen() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isEnrolled, setIsEnrolled] = useState(false);
+  const [videos, setVideos] = useState<Video[]>([]);
+  const [videosLoading, setVideosLoading] = useState(false);
+  const [selectedVideo, setSelectedVideo] = useState<Video | null>(null);
 
   useEffect(() => {
     if (courseId) {
@@ -191,6 +195,12 @@ export default function CourseDetailScreen() {
       });
     }
   }, [courseId]);
+
+  useEffect(() => {
+    if (isEnrolled && courseId) {
+      fetchVideos();
+    }
+  }, [isEnrolled, courseId]);
 
   const fetchCourseDetails = async () => {
     try {
@@ -213,16 +223,27 @@ export default function CourseDetailScreen() {
     if (!userId || !courseId) return;
 
     try {
-      const enrollments = await api.enrollments.getUserEnrollments(userId);
-      if (enrollments && enrollments.length > 0) {
-        const isEnrolledCourse = enrollments.some((e: any) => {
-          const eCourseId = e.courseId || e.course_id;
-          return eCourseId === courseId;
-        });
-        setIsEnrolled(isEnrolledCourse);
+      await api.enrollments.check(userId, courseId);
+      setIsEnrolled(true);
+    } catch (err: any) {
+      console.log('Not enrolled:', err?.message);
+      setIsEnrolled(false);
+    }
+  };
+
+  const fetchVideos = async () => {
+    if (!isEnrolled) return;
+    try {
+      setVideosLoading(true);
+      const videoData = await api.courses.getVideos(courseId);
+      setVideos(videoData || []);
+      if (videoData && videoData.length > 0) {
+        setSelectedVideo(videoData[0]);
       }
     } catch (err: any) {
-      console.log('Check enrollments error:', err?.message);
+      console.log('Fetch videos error:', err?.message);
+    } finally {
+      setVideosLoading(false);
     }
   };
 
@@ -267,9 +288,9 @@ export default function CourseDetailScreen() {
           colors={['transparent', 'rgba(0,0,0,0.8)']}
           style={styles.imageOverlay}
         >
-          <View style={[styles.badge, { backgroundColor: courseData?.isPaid ? Colors.primary : Colors.success }]}>
-            <Text style={styles.badgeText}>{courseData?.isPaid ? 'Premium' : 'Free'}</Text>
-          </View>
+<View style={[styles.badge, { backgroundColor: (courseData?.isPaid || courseData?.price > 0) ? Colors.primary : Colors.success }]}>
+              <Text style={styles.badgeText}>{(courseData?.isPaid || courseData?.price > 0) ? 'Premium' : 'Free'}</Text>
+            </View>
         </LinearGradient>
 
         <View style={styles.content}>
@@ -286,6 +307,47 @@ export default function CourseDetailScreen() {
             {courseData?.description || ''}
           </Text>
 
+          {isEnrolled && videos.length > 0 && (
+            <View style={[styles.section, { borderBottomColor: colors.border }]}>
+              <Text style={[styles.sectionTitle, { color: colors.text }]}>Videos</Text>
+              {videosLoading ? (
+                <ActivityIndicator size="small" color={colors.primary} />
+              ) : (
+                <>
+                  {selectedVideo && selectedVideo.vimeoId && (
+                    <View style={styles.videoPlayerContainer}>
+                      <VimeoPlayer
+                        vimeoId={selectedVideo.vimeoId}
+                        videoId={selectedVideo.id || ''}
+                      />
+                    </View>
+                  )}
+                  <View style={styles.videoList}>
+                    {videos.map((video: Video, index: number) => (
+                      <TouchableOpacity
+                        key={video.id || index}
+                        style={[
+                          styles.videoItem,
+                          { backgroundColor: selectedVideo?.id === video.id ? colors.primary + '20' : colors.card },
+                        ]}
+                        onPress={() => setSelectedVideo(video)}
+                      >
+                        <Ionicons
+                          name="play-circle"
+                          size={24}
+                          color={selectedVideo?.id === video.id ? colors.primary : colors.text}
+                        />
+                        <Text style={[styles.videoTitle, { color: colors.text }]}>
+                          {video.title}
+                        </Text>
+                      </TouchableOpacity>
+                    ))}
+                  </View>
+                </>
+              )}
+            </View>
+          )}
+
           <View style={[styles.section, { borderBottomColor: colors.border }]}>
             <Text style={[styles.sectionTitle, { color: colors.text }]}>What you'll learn</Text>
             {features.map((feature: any, index: number) => (
@@ -295,7 +357,7 @@ export default function CourseDetailScreen() {
               </View>
             ))}
             {features.length === 0 && (
-              <Text style={[styles.noFeatures, { color: colors.textMuted }]}>
+              <Text style={[styles.noFeatures, { color: colors.textSecondary }]}>
                 This course includes video lessons and practical exercises.
               </Text>
             )}
@@ -327,10 +389,17 @@ export default function CourseDetailScreen() {
         {isEnrolled ? (
           <TouchableOpacity
             style={[styles.enrollButton, { backgroundColor: Colors.success }]}
-            onPress={() => router.push({ pathname: '/(tabs)/courses', params: { courseId } })}
+            onPress={() => {
+              if (videos.length > 0 && selectedVideo) {
+                return;
+              }
+              router.push({ pathname: '/(tabs)/courses', params: { courseId } });
+            }}
           >
             <Ionicons name="play" size={20} color="#fff" />
-            <Text style={styles.enrollButtonText}>Start Learning</Text>
+            <Text style={styles.enrollButtonText}>
+              {videos.length > 0 ? 'Watch Videos' : 'Start Learning'}
+            </Text>
           </TouchableOpacity>
         ) : (
           <CourseEnrollButton
@@ -378,4 +447,8 @@ const styles = StyleSheet.create({
   footerPriceAmount: { fontSize: 24, fontWeight: 'bold' },
   enrollButton: { flexDirection: 'row', alignItems: 'center', gap: 8, paddingVertical: 14, paddingHorizontal: 24, borderRadius: BorderRadius.lg },
   enrollButtonText: { color: '#fff', fontWeight: '600', fontSize: 16 },
+  videoPlayerContainer: { height: 220, backgroundColor: '#000', borderRadius: BorderRadius.md, overflow: 'hidden', marginBottom: 16 },
+  videoList: { gap: 8 },
+  videoItem: { flexDirection: 'row', alignItems: 'center', gap: 12, padding: 12, borderRadius: BorderRadius.md },
+  videoTitle: { flex: 1, fontSize: 14 },
 });
